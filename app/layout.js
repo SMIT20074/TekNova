@@ -1,4 +1,5 @@
 import "./globals.css"
+import { AuthProvider } from "../context/AuthContext"
 
 export const metadata = {
   title: "TekNova | Campus Resource Exchange",
@@ -88,23 +89,23 @@ export default function RootLayout({ children }) {
                         "margin-tablet": "32px"
                       },
                       fontFamily: {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Geist"],
                         "headline-md": ["Plus Jakarta Sans"],
                         "label-sm": ["Geist"],
-                        "body-lg": ["Inter"],
-                        "headline-lg": ["Plus Jakarta Sans"],
-                        "display-lg": ["Plus Jakarta Sans"],
-                        "label-md": ["Geist"],
-                        "display-md": ["Plus Jakarta Sans"],
                         "body-md": ["Inter"]
                       },
                       fontSize: {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "display-md": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
                         "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
                         "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
-                        "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
-                        "display-md": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
                         "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
                       }
                     }
@@ -116,8 +117,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="min-h-screen flex flex-col overflow-x-hidden">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
 }
+
