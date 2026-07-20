@@ -25,6 +25,14 @@ export default function LoginPage() {
     setSuccessMsg("")
     setLoading(true)
 
+    // Check if Supabase key is still a placeholder
+    const currentKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!currentKey || currentKey === "your-anon-key-here" || currentKey.includes("dummy")) {
+      setErrorMsg("Supabase Anon Key is not configured in .env.local yet. Please paste your real Anon Key to perform live authentication!")
+      setLoading(false)
+      return
+    }
+
     try {
       if (mode === "login") {
         await signIn(email, password)
@@ -35,7 +43,11 @@ export default function LoginPage() {
         setSuccessMsg("Account created! Check your email to verify your account.")
       }
     } catch (err) {
-      setErrorMsg(err.message || "Authentication failed. Please check your credentials.")
+      if (err.message === "Failed to fetch") {
+        setErrorMsg("Could not connect to Supabase. Please verify your Supabase Anon Key in .env.local.")
+      } else {
+        setErrorMsg(err.message || "Authentication failed. Please check your credentials.")
+      }
     } finally {
       setLoading(false)
     }
@@ -119,11 +131,10 @@ export default function LoginPage() {
                 {/* Form Tabs */}
                 <div className="flex border-b border-outline-variant mb-8">
                   <button
-                    className={`flex-1 py-4 font-label-md text-label-md font-bold transition-all ${
-                      mode === "login"
-                        ? "text-primary border-b-2 border-primary"
-                        : "text-on-surface-variant hover:text-primary"
-                    }`}
+                    className={`flex-1 py-4 font-label-md text-label-md font-bold transition-all ${mode === "login"
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-on-surface-variant hover:text-primary"
+                      }`}
                     onClick={() => {
                       setMode("login")
                       setErrorMsg("")
@@ -133,11 +144,10 @@ export default function LoginPage() {
                     Login
                   </button>
                   <button
-                    className={`flex-1 py-4 font-label-md text-label-md font-bold transition-all ${
-                      mode === "signup"
-                        ? "text-primary border-b-2 border-primary"
-                        : "text-on-surface-variant hover:text-primary"
-                    }`}
+                    className={`flex-1 py-4 font-label-md text-label-md font-bold transition-all ${mode === "signup"
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-on-surface-variant hover:text-primary"
+                      }`}
                     onClick={() => {
                       setMode("signup")
                       setErrorMsg("")
@@ -248,27 +258,27 @@ export default function LoginPage() {
                       </div>
 
                       <div className="space-y-1">
-                          <label className="font-label-sm text-label-sm text-on-surface-variant">Student Email (.edu required)</label>
-                          <input
-                            className="w-full px-4 py-3 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary-container outline-none"
-                            placeholder="student@university.edu"
-                            required
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
+                        <label className="font-label-sm text-label-sm text-on-surface-variant">Student Email (.edu required)</label>
+                        <input
+                          className="w-full px-4 py-3 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary-container outline-none"
+                          placeholder="student@university.edu"
+                          required
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
                       </div>
 
                       <div className="space-y-1">
-                          <label className="font-label-sm text-label-sm text-on-surface-variant">Create Password</label>
-                          <input
-                            className="w-full px-4 py-3 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary-container outline-none"
-                            placeholder="At least 8 characters"
-                            required
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
+                        <label className="font-label-sm text-label-sm text-on-surface-variant">Create Password</label>
+                        <input
+                          className="w-full px-4 py-3 bg-surface-container rounded-xl border-none focus:ring-2 focus:ring-primary-container outline-none"
+                          placeholder="At least 8 characters"
+                          required
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
                       </div>
 
                       <p className="text-[12px] text-on-surface-variant/70 text-center px-4">

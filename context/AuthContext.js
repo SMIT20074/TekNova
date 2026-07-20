@@ -7,9 +7,9 @@ const AuthContext = createContext({
   user: null,
   session: null,
   loading: true,
-  signIn: async () => {},
-  signUp: async () => {},
-  signOut: async () => {},
+  signIn: async () => { },
+  signUp: async () => { },
+  signOut: async () => { },
 })
 
 export function AuthProvider({ children }) {
