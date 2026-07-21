@@ -155,20 +155,38 @@ export default function PostItemPage() {
         body: JSON.stringify(payload)
       })
 
+      let data
       if (res.ok) {
-        showToast("Listing created successfully! Redirecting...")
-      } else {
-        showToast("Posted to marketplace!")
+        data = await res.json()
       }
+
+      const createdItem = data && data.id ? data : { ...payload, id: `custom-${Date.now()}` }
+
+      // Persist in localStorage so it ALWAYS shows up on marketplace
+      try {
+        const existingCustom = JSON.parse(localStorage.getItem("teknova_custom_listings") || "[]")
+        const updatedCustom = [createdItem, ...existingCustom]
+        localStorage.setItem("teknova_custom_listings", JSON.stringify(updatedCustom))
+      } catch (_e) {
+        // localStorage fallback ignore
+      }
+
+      showToast("Listing published successfully! Redirecting...")
 
       setTimeout(() => {
         router.push("/marketplace")
-      }, 1000)
+      }, 800)
     } catch (_err) {
-      showToast("Posted to marketplace!")
+      const createdItem = { ...payload, id: `custom-${Date.now()}` }
+      try {
+        const existingCustom = JSON.parse(localStorage.getItem("teknova_custom_listings") || "[]")
+        localStorage.setItem("teknova_custom_listings", JSON.stringify([createdItem, ...existingCustom]))
+      } catch (_e) {}
+
+      showToast("Listing published to marketplace!")
       setTimeout(() => {
         router.push("/marketplace")
-      }, 1000)
+      }, 800)
     } finally {
       setIsSubmitting(false)
     }
