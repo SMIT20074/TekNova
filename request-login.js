@@ -1,7 +1,7 @@
 import { supabaseServer } from './_supabaseServer.js';
 
-// Add your college's email domain(s) here
-const ALLOWED_DOMAINS = ['college.edu']; // e.g. change to your actual college domain
+// TODO: Replace this with your actual college email domain once you have it
+const ALLOWED_DOMAINS = ['yourcollege.edu.in'];
 
 export default async function handler(req, res) {
   // POST /api/request-login -> validates college email, then sends magic link
