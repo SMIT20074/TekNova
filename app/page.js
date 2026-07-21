@@ -55,11 +55,10 @@ export default function Home() {
     <>
       {/* ── TopNavBar ── */}
       <header
-        className={`w-full fixed top-0 z-50 transition-all duration-500 ${
-          scrolled
+        className={`w-full fixed top-0 z-50 transition-all duration-500 ${scrolled
             ? "bg-surface/90 backdrop-blur-md shadow-sm border-b border-outline-variant/30"
             : "bg-surface/0 border-b border-transparent"
-        }`}
+          }`}
       >
         <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
           <div className="flex items-center gap-12">
@@ -86,7 +85,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <button onClick={() => handleAction("/marketplace", true)} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110" title="Notifications">notifications</button>
               <button onClick={() => handleAction("/marketplace", true)} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110" title="Messages">chat_bubble</button>
-              
+
               <button onClick={() => handleAction("/marketplace", true)} className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md text-label-md font-bold btn-animate">
                 Post Item
               </button>

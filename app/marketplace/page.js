@@ -315,7 +315,7 @@ function MarketplaceContent() {
               <button
                 onClick={() => {
                   setIsSideMenuOpen(false)
-                  executeGatedAction("create a new Post", () => showToast("Opening Post Item Form..."))
+                  executeGatedAction("create a new Post", () => router.push("/post"))
                 }}
                 className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-surface-container transition-all text-on-surface font-label-md font-semibold text-left"
               >
@@ -490,7 +490,7 @@ function MarketplaceContent() {
 
             {/* Post Item Button (Gated) */}
             <button
-              onClick={() => executeGatedAction("Post a new item", () => showToast("Opening Post Form..."))}
+              onClick={() => executeGatedAction("Post a new item", () => router.push("/post"))}
               className="bg-primary text-on-primary font-label-md text-label-md px-4 py-2.5 rounded-full hover:bg-primary/90 transition-all font-bold shadow-xs flex items-center gap-1.5"
             >
               <span className="material-symbols-outlined text-sm">add</span>
@@ -535,11 +535,10 @@ function MarketplaceContent() {
               <button
                 key={cat.name}
                 onClick={() => setSelectedCategory(cat.name)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-md text-label-md whitespace-nowrap transition-all ${
-                  selectedCategory === cat.name
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-md text-label-md whitespace-nowrap transition-all ${selectedCategory === cat.name
                     ? "bg-primary text-on-primary font-bold shadow-xs scale-105"
                     : "bg-surface-variant/40 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface"
-                }`}
+                  }`}
               >
                 <span className="material-symbols-outlined text-lg">{cat.icon}</span>
                 <span>{cat.name}</span>
@@ -822,8 +821,8 @@ function MarketplaceContent() {
           </div>
           <div className="flex gap-6 text-xs font-semibold">
             <Link href="/" className="hover:text-primary-fixed-dim transition-colors">Landing Page</Link>
-            <button onClick={() => executeGatedAction("access Safety Tips", () => {})} className="hover:text-primary-fixed-dim transition-colors">Campus Safety</button>
-            <button onClick={() => executeGatedAction("access Help Center", () => {})} className="hover:text-primary-fixed-dim transition-colors">Help Center</button>
+            <button onClick={() => executeGatedAction("access Safety Tips", () => { })} className="hover:text-primary-fixed-dim transition-colors">Campus Safety</button>
+            <button onClick={() => executeGatedAction("access Help Center", () => { })} className="hover:text-primary-fixed-dim transition-colors">Help Center</button>
           </div>
         </div>
       </footer>
