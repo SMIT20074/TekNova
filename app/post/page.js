@@ -148,30 +148,30 @@ export default function PostItemPage() {
       created_at: "Just now"
     }
 
+    const newItem = {
+      ...payload,
+      id: `custom-${Date.now()}`
+    }
+
     try {
-      const res = await fetch("/api/listings", {
+      const existing = JSON.parse(localStorage.getItem("teknova_custom_listings") || "[]")
+      localStorage.setItem("teknova_custom_listings", JSON.stringify([newItem, ...existing]))
+    } catch (_e) {}
+
+    try {
+      await fetch("/api/listings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
+    } catch (_err) {}
 
-      if (res.ok) {
-        showToast("Listing created successfully! Redirecting...")
-      } else {
-        showToast("Posted to marketplace!")
-      }
+    showToast("Listing created successfully! Redirecting...")
 
-      setTimeout(() => {
-        router.push("/marketplace")
-      }, 1000)
-    } catch (_err) {
-      showToast("Posted to marketplace!")
-      setTimeout(() => {
-        router.push("/marketplace")
-      }, 1000)
-    } finally {
-      setIsSubmitting(false)
-    }
+    setTimeout(() => {
+      router.push("/marketplace")
+    }, 1000)
+    setIsSubmitting(false)
   }
 
   return (

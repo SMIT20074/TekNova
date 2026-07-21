@@ -155,20 +155,37 @@ function MarketplaceContent() {
   const [authGateModal, setAuthGateModal] = useState({ open: false, actionTitle: "" })
   const [toastMessage, setToastMessage] = useState("")
 
-  // Fetch listings from API (fallback to seed data)
+  // Fetch listings from API (fallback to seed data + localStorage custom listings)
   useEffect(() => {
     async function fetchListings() {
+      let customListings = []
+      try {
+        const stored = localStorage.getItem("teknova_custom_listings")
+        if (stored) {
+          customListings = JSON.parse(stored)
+        }
+      } catch (_e) {}
+
       try {
         const res = await fetch("/api/listings")
         if (res.ok) {
           const data = await res.json()
           if (Array.isArray(data) && data.length > 0) {
-            setListings(data)
+            // Merge custom listings with database listings (avoid duplicates by id)
+            const dbIds = new Set(data.map((item) => item.id))
+            const uniqueCustom = customListings.filter((item) => !dbIds.has(item.id))
+            setListings([...uniqueCustom, ...data])
+            return
           }
         }
       } catch (_err) {
         // Fallback to SEED_LISTINGS
       }
+
+      // If API fails or returns empty, combine custom with seed
+      const seedIds = new Set(SEED_LISTINGS.map((item) => item.id))
+      const uniqueCustom = customListings.filter((item) => !seedIds.has(item.id))
+      setListings([...uniqueCustom, ...SEED_LISTINGS])
     }
     fetchListings()
   }, [])
