@@ -164,7 +164,7 @@ function MarketplaceContent() {
         if (stored) {
           customListings = JSON.parse(stored)
         }
-      } catch (_e) {}
+      } catch (_e) { }
 
       try {
         const res = await fetch("/api/listings")
@@ -553,8 +553,8 @@ function MarketplaceContent() {
                 key={cat.name}
                 onClick={() => setSelectedCategory(cat.name)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-md text-label-md whitespace-nowrap transition-all ${selectedCategory === cat.name
-                    ? "bg-primary text-on-primary font-bold shadow-xs scale-105"
-                    : "bg-surface-variant/40 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface"
+                  ? "bg-primary text-on-primary font-bold shadow-xs scale-105"
+                  : "bg-surface-variant/40 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface"
                   }`}
               >
                 <span className="material-symbols-outlined text-lg">{cat.icon}</span>
@@ -758,6 +758,10 @@ function MarketplaceContent() {
                     <img
                       src={item.image_url}
                       alt={item.title}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800&auto=format&fit=crop"
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

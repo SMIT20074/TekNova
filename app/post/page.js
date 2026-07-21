@@ -60,7 +60,7 @@ export default function PostItemPage() {
   const [rentDuration, setRentDuration] = useState("/ day")
   const [location, setLocation] = useState("Student Hub")
   const [description, setDescription] = useState("")
-  
+
   // Photos State (3 Photos Minimum Limit)
   const [photos, setPhotos] = useState([])
   const [isDragging, setIsDragging] = useState(false)
@@ -74,15 +74,24 @@ export default function PostItemPage() {
     setTimeout(() => setToastMessage(""), 3000)
   }
 
-  // Handle Photo Upload
+  // Handle Photo Upload (Convert to persistent Base64 Data URLs)
   const handleFilesAdded = (fileList) => {
     setErrorMsg("")
-    const newPhotos = Array.from(fileList).map((file, idx) => ({
-      id: `${Date.now()}-${idx}-${file.name}`,
-      name: file.name,
-      url: URL.createObjectURL(file)
-    }))
-    setPhotos((prev) => [...prev, ...newPhotos])
+    Array.from(fileList).forEach((file, idx) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const dataUrl = e.target.result
+        setPhotos((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-${idx}-${file.name}`,
+            name: file.name,
+            url: dataUrl
+          }
+        ])
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleDragOver = (e) => {
@@ -156,7 +165,7 @@ export default function PostItemPage() {
     try {
       const existing = JSON.parse(localStorage.getItem("teknova_custom_listings") || "[]")
       localStorage.setItem("teknova_custom_listings", JSON.stringify([newItem, ...existing]))
-    } catch (_e) {}
+    } catch (_e) { }
 
     try {
       await fetch("/api/listings", {
@@ -164,7 +173,7 @@ export default function PostItemPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
-    } catch (_err) {}
+    } catch (_err) { }
 
     showToast("Listing created successfully! Redirecting...")
 
@@ -327,9 +336,9 @@ export default function PostItemPage() {
 
       {/* ── Main Content (Stitch Design Layout) ── */}
       <main className="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-10 flex flex-col md:flex-row gap-8">
-        
+
         {/* Left Column: Form (8/12 width) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -354,7 +363,7 @@ export default function PostItemPage() {
           )}
 
           <form onSubmit={handleSubmit} className="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
-            
+
             {/* Title */}
             <div className="flex flex-col gap-2">
               <label className="font-label-md text-sm font-semibold text-on-surface" htmlFor="title">
@@ -382,11 +391,10 @@ export default function PostItemPage() {
                       type="button"
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
-                        isSelected
+                      className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${isSelected
                           ? "border-primary bg-primary/10 text-primary font-bold shadow-xs scale-[1.02]"
                           : "border-outline-variant/40 bg-surface-container-low text-on-surface-variant hover:border-outline hover:bg-surface-variant/30"
-                      }`}
+                        }`}
                     >
                       <span className="material-symbols-outlined text-2xl">{cat.icon}</span>
                       <span className="font-label-sm text-xs font-semibold">{cat.label}</span>
@@ -398,7 +406,7 @@ export default function PostItemPage() {
 
             {/* Condition & Listing Type (2 Cols) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
+
               {/* Condition Pills */}
               <div className="flex flex-col gap-2">
                 <label className="font-label-md text-sm font-semibold text-on-surface">Condition</label>
@@ -410,11 +418,10 @@ export default function PostItemPage() {
                         type="button"
                         key={cond.id}
                         onClick={() => setCondition(cond.id)}
-                        className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${
-                          isSelected
+                        className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${isSelected
                             ? "bg-primary text-on-primary shadow-2xs"
                             : "text-on-surface-variant hover:bg-surface-variant/40"
-                        }`}
+                          }`}
                       >
                         {cond.label}
                       </button>
@@ -434,11 +441,10 @@ export default function PostItemPage() {
                         type="button"
                         key={type.id}
                         onClick={() => setListingType(type.id)}
-                        className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${
-                          isSelected
+                        className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition-all ${isSelected
                             ? "bg-primary text-on-primary shadow-2xs"
                             : "text-on-surface-variant hover:bg-surface-variant/40"
-                        }`}
+                          }`}
                       >
                         {type.label}
                       </button>
@@ -451,13 +457,13 @@ export default function PostItemPage() {
 
             {/* Price & Location (2 Cols) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
+
               {/* Price & Duration */}
               <div className="flex flex-col gap-2">
                 <label className="font-label-md text-sm font-semibold text-on-surface" htmlFor="price">
                   {listingType === "Sell" ? "Fixed Price (₹ INR)" : listingType === "Rent" ? "Rental Rate (₹ INR)" : "Price"}
                 </label>
-                
+
                 {listingType === "Giveaway" ? (
                   <div className="w-full rounded-xl border border-outline-variant/40 py-3 px-4 bg-surface-container-high font-bold text-primary text-sm flex items-center justify-between shadow-2xs">
                     <span>FREE Giveaway</span>
@@ -490,11 +496,10 @@ export default function PostItemPage() {
                             type="button"
                             key={dur.id}
                             onClick={() => setRentDuration(dur.id)}
-                            className={`px-3 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                              rentDuration === dur.id
+                            className={`px-3 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${rentDuration === dur.id
                                 ? "bg-primary text-on-primary shadow-2xs"
                                 : "text-on-surface-variant hover:bg-surface-variant/40"
-                            }`}
+                              }`}
                           >
                             {dur.id}
                           </button>
@@ -547,11 +552,10 @@ export default function PostItemPage() {
                 <label className="font-label-md text-sm font-semibold text-on-surface">
                   Photos <span className="text-error font-bold">*</span>
                 </label>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-                  photos.length >= 3
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${photos.length >= 3
                     ? "bg-primary/10 text-primary border-primary/30"
                     : "bg-error-container/50 text-error border-error/30"
-                }`}>
+                  }`}>
                   {photos.length} / 3 Minimum Photos
                 </span>
               </div>
@@ -576,11 +580,10 @@ export default function PostItemPage() {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all cursor-pointer group ${
-                  isDragging
+                className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all cursor-pointer group ${isDragging
                     ? "border-primary bg-primary/10 scale-[1.01]"
                     : "border-outline-variant/60 bg-surface-container-low hover:bg-surface-variant/30 hover:border-primary"
-                }`}
+                  }`}
               >
                 <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <span className="material-symbols-outlined text-3xl">cloud_upload</span>
@@ -659,7 +662,7 @@ export default function PostItemPage() {
         </motion.div>
 
         {/* Right Column: Sidebar Info (4/12 width) */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
