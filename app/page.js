@@ -41,10 +41,11 @@ export default function Home() {
     }
   }, [])
 
-  // Helper handler: If not logged in, redirect any action button to /login
-  const handleAction = (targetPath = "/login") => {
-    if (!user) {
-      router.push("/login")
+  // Helper handler: Public routes (like /marketplace or /about) navigate directly.
+  // Gated routes check user authentication.
+  const handleAction = (targetPath = "/marketplace", isGated = false) => {
+    if (isGated && !user) {
+      router.push(`/login?redirect=${encodeURIComponent(targetPath)}`)
     } else {
       router.push(targetPath)
     }
@@ -66,10 +67,10 @@ export default function Home() {
               NearShare
             </Link>
             <nav className="hidden md:flex items-center gap-8">
-              <button onClick={() => handleAction("/browse")} className="text-primary border-b-2 border-primary pb-1 font-bold font-label-md text-label-md">Browse</button>
-              <button onClick={() => handleAction("/requests")} className="nav-link text-on-surface-variant/80 hover:text-primary transition-colors font-label-md text-label-md">Requests</button>
-              <button onClick={() => handleAction("/map")} className="nav-link text-on-surface-variant/80 hover:text-primary transition-colors font-label-md text-label-md">Map</button>
+              <button onClick={() => handleAction("/marketplace")} className="text-primary border-b-2 border-primary pb-1 font-bold font-label-md text-label-md">Browse</button>
               <button onClick={() => handleAction("/about")} className="nav-link text-on-surface-variant/80 hover:text-primary transition-colors font-label-md text-label-md">About</button>
+              <button onClick={() => handleAction("/login")} className="nav-link text-on-surface-variant/80 hover:text-primary transition-colors font-label-md text-label-md">Login</button>
+              <button onClick={() => handleAction("/login")} className="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary px-4 py-1.5 rounded-full transition-all font-bold font-label-md text-label-md">Create account</button>
             </nav>
           </div>
           <div className="flex items-center gap-6">
@@ -79,20 +80,20 @@ export default function Home() {
                 className="bg-transparent border-none focus:ring-0 text-body-md font-body-md w-48 outline-none pl-2"
                 placeholder="Search resources..."
                 type="text"
-                onFocus={() => handleAction("/search")}
+                onFocus={() => handleAction("/marketplace")}
               />
             </div>
             <div className="flex items-center gap-4">
-              <button onClick={() => handleAction("/notifications")} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110">notifications</button>
-              <button onClick={() => handleAction("/chat")} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110">chat_bubble</button>
+              <button onClick={() => handleAction("/marketplace", true)} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110" title="Notifications">notifications</button>
+              <button onClick={() => handleAction("/marketplace", true)} className="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-lg transition-all hover:scale-110" title="Messages">chat_bubble</button>
               
-              <button onClick={() => handleAction("/post")} className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md text-label-md font-bold btn-animate">
+              <button onClick={() => handleAction("/marketplace", true)} className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md text-label-md font-bold btn-animate">
                 Post Item
               </button>
 
               {user ? (
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handleAction("/profile")} className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-primary/20 hover:scale-105 transition-transform" title={user.email}>
+                  <button onClick={() => handleAction("/marketplace")} className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-primary/20 hover:scale-105 transition-transform" title={user.email}>
                     <span className="material-symbols-outlined text-on-primary-container">person</span>
                   </button>
                   <button onClick={() => signOut()} className="text-label-sm font-bold text-error hover:underline px-2">Logout</button>

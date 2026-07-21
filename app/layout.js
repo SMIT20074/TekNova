@@ -1,5 +1,6 @@
 import "./globals.css"
 import { AuthProvider } from "../context/AuthContext"
+import { WishlistProvider } from "../context/WishlistContext"
 
 export const metadata = {
   title: "TekNova | Campus Resource Exchange",
@@ -118,7 +119,9 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen flex flex-col overflow-x-hidden">
         <AuthProvider>
-          {children}
+          <WishlistProvider>
+            {children}
+          </WishlistProvider>
         </AuthProvider>
       </body>
     </html>
